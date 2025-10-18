@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { X, Users, CheckCircle } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { saveVolunteerRegistration } from '../utils/localStorage';
 
 interface VolunteerModalProps {
   isOpen: boolean;
@@ -36,14 +31,10 @@ export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps)
     setSubmitStatus('idle');
 
     try {
-      const { error } = await supabase
-        .from('volunteer_registrations')
-        .insert([{
-          ...formData,
-          age: formData.age ? parseInt(formData.age) : null,
-        }]);
-
-      if (error) throw error;
+      saveVolunteerRegistration({
+        ...formData,
+        age: formData.age ? parseInt(formData.age) : null,
+      });
 
       setSubmitStatus('success');
       setTimeout(() => {
